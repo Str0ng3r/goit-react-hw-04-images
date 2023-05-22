@@ -1,49 +1,51 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from './styles.module.css';
 import { Modal } from './Modal';
 
-export class LiList extends React.Component {
-  state = {
-    showModal: false,
-  };
+export const LiList = ({src, id, alt, big}) => {
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+const [showModal,setShowModal] = useState(false)
+
+
+const handleModalOpen = () => {
+  setShowModal(true)
+};
+
+const handleModalClose = () => {
+  setShowModal(false)
+};
+
+
+const handleClick = () => {
+  handleModalOpen();
+}; 
+
+const handleKeyDown = (event) => {
+  if (event.key === 'Escape') {
+    handleModalClose();
   }
+};
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-  }
 
-  handleModalOpen = () => {
-    this.setState({ showModal: true });
-  };
+  useEffect(() => {
 
-  handleModalClose = () => {
-    this.setState({ showModal: false });
-  };
+    document.addEventListener('keydown', handleKeyDown);
+  
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  },);
 
-  handleKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      this.handleModalClose();
-    }
-  };
 
-  handleClick = () => {
-    this.handleModalOpen();
-  };
 
-  render() {
-    const { src, id, alt, big } = this.props;
-    const { showModal } = this.state;
 
     return (
       <>
         <li
           key={id}
           className={styles.ImageGalleryItem}
-          onClick={this.handleClick}
+          onClick={handleClick}
         >
           <img
             className={styles.ImageGalleryItemimage}
@@ -54,16 +56,15 @@ export class LiList extends React.Component {
         </li>
 
         {showModal ? (
-          <Modal src={src} alt={alt} onClose={this.handleModalClose} />
+          <Modal src={src} alt={alt} onClose={handleModalClose} />
         ) : null}
       </>
     );
-  }
 }
 
 LiList.propTypes = {
   src: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   alt: PropTypes.string.isRequired,
-  big: PropTypes.string.isRequired,
+  big: PropTypes.number.isRequired,
 };

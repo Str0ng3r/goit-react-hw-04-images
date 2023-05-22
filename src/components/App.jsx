@@ -5,11 +5,10 @@ import axios from 'axios';
 import { SpinnerWait } from './loadesSpinner';
 import { ButtonLoad } from './ButtonLoader';
 import styles from './styles.module.css';
-import { useEffect } from 'react';
+import { useEffect,useRef } from 'react';
 
-export const App = ({}) => {
+export const App = () => {
 
-const [massiveData,setMassiveData] = useState([])
 const [massiveLoading,setMassiveLoading] = useState([])
 const [spinner,setSpinner] = useState(false)
 const [errorState,setErrorState] = useState(false)
@@ -18,23 +17,19 @@ const [buttonLoad,setButtonLoad] = useState(false)
 const [pages,setPages] = useState(2)
 
 
+  const prevSearchNameRef = useRef(searchName);
+  const prevPagesRef = useRef(pages);
 
-  // state = {
-  //   massiveData: [],
-  //   massiveLoading: [],
-  //   spinner: false,
-  //   errorState: false,
-  //   searchName: '',
-  //   buttonLoad: false,
-  //   pages: 2,
-  // };
+  useEffect(() => {
+    if (prevSearchNameRef.current !== searchName || prevPagesRef.current !== pages) {
+      fetchData();
+    }
+  
+    prevSearchNameRef.current = searchName;
+    prevPagesRef.current = pages;
+  }, [searchName, pages]);
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.searchName !== this.state.searchName || prevState.pages !== this.state.pages) {
-  //     this.fetchData();
-  //   }
-  // }
-
+  
   const fetchData = () => {
    setSpinner(true)
 
@@ -52,40 +47,30 @@ setSpinner(false)
         }})
       .catch(error => {
         setErrorState(true)
-        setSpinner(true)
+        setSpinner(false)
       });
   };
 
+
+
   const fcOnSb = val => {
-    this.setState({
-      searchName: val,
-      massiveLoading: [],
-      spinner: true,
-      pages: 2,
-    });
+setSearchName(val)
+setMassiveLoading([])
+setSpinner(true)
+setPages(2)
   };
 
  const fcLoader = () => {
-    this.setState(
-      prevState => ({
-        pages: prevState.pages + 1,
-        spinner: true,
-        buttonLoad: false,
-      }),
-      fetchData
-    );
+  setPages(pages + 1)
+  fetchData()
+  setSpinner(true)
+  setButtonLoad(false)
   };
-
-
-    // const { errorState, spinner, massiveData, massiveLoading, buttonLoad } =
-    //   this.state;
-
 
     return (
       <div className={styles.App}>
         <SearchBar onSubmit={fcOnSb} />
         {errorState && <SpinnerWait message="Произошла ошибка" />}
-        {massiveData.length > 1 && <ListGallery mass={massiveData} />}
         {massiveLoading.length > 1 && <ListGallery mass={massiveLoading} />}
         {spinner && <SpinnerWait message="Пожалуйста, подождите" />}
         {buttonLoad && <ButtonLoad funcLoad={fcLoader} />}
