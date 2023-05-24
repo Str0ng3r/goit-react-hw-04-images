@@ -53,7 +53,7 @@ export const App = () => {
     setSearchName(val);
     setMassiveLoading([]);
     setSpinner(true);
-    setPages(2);
+    setPages(1);
   };
 
   const fcLoader = () => {
