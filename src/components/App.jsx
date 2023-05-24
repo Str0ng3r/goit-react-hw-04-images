@@ -13,6 +13,7 @@ export const App = () => {
   const [searchName, setSearchName] = useState('');
   const [buttonLoad, setButtonLoad] = useState(false);
   const [pages, setPages] = useState(1);
+  const [initialRender, setInitialRender] = useState(false); // Track initial render
 
   const prevSearchNameRef = useRef('');
   const prevPagesRef = useRef(2);
@@ -41,13 +42,17 @@ export const App = () => {
   }, [searchName, pages, massiveLoading]);
 
   useEffect(() => {
-    if (prevSearchNameRef.current !== searchName || prevPagesRef.current !== pages) {
-      fetchData();
+    if (initialRender) { // Perform data fetching only after the initial render
+      if (prevSearchNameRef.current !== searchName || prevPagesRef.current !== pages) {
+        fetchData();
+      }
+    } else {
+      setInitialRender(true); // Update flag after the initial render
     }
 
     prevSearchNameRef.current = searchName;
     prevPagesRef.current = pages;
-  }, [searchName, pages, fetchData]);
+  }, [searchName, pages, fetchData, initialRender]);
 
   const fcOnSb = val => {
     setSearchName(val);
