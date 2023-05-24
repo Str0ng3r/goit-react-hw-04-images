@@ -12,7 +12,7 @@ export const App = () => {
   const [errorState, setErrorState] = useState(false);
   const [searchName, setSearchName] = useState('');
   const [buttonLoad, setButtonLoad] = useState(false);
-  const [pages, setPages] = useState(2);
+  const [pages, setPages] = useState(1);
 
   const prevSearchNameRef = useRef('');
   const prevPagesRef = useRef(2);
